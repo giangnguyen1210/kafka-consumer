@@ -7,7 +7,7 @@ const kafka = new Kafka({
 });
 
 const consumer = kafka.consumer({ 
-  groupId: 'bimnext-api-giang', 
+  groupId: 'bimnext-api-giang-consumer', 
   autoCommit: false // Disable auto commit
 });
 
@@ -42,7 +42,6 @@ const runConsumer = async (server) => {
 
         const correlationId = message.headers.correlationId ? message.headers.correlationId.toString() : '';
 
-        console.log(messageValue);
         const chatMessage = {
           topic,
           partition,
@@ -54,8 +53,7 @@ const runConsumer = async (server) => {
           },
         };
 
-        console.log('Processed Kafka message:', messageValue);
-
+        console.log(correlationId);
         // Emit the message to connected Socket.io clients
         io.emit('newMessage', messageValue);
         
@@ -68,7 +66,6 @@ const runConsumer = async (server) => {
           },
         ]);
 
-        console.log(`Successfully committed offset: ${message.offset}`);
       } catch (error) {
         console.error('Error processing message:', error);
       }
